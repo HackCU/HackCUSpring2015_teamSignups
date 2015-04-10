@@ -11,13 +11,13 @@ class Team
     @name, @members = name, members
   end
 
-  def self.create(*args)
-    new(*args).tap do |team|
-      if CLIENT.repository? "HackCU/#{team.name}"
-        puts "#{team.name} already exists."
+  def self.create(name:, members:)
+    new(name: name, members: members).tap do |team|
+      if CLIENT.repository? "HackCU/#{name}"
+        puts "#{name} already exists."
         return team
       else
-        puts "Creating #{team.name}."
+        puts "Creating #{name}."
         team.create_team
         team.add_members
         team.add_repo
