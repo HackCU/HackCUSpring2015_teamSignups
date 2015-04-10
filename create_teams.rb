@@ -29,8 +29,8 @@ class Team
     @team = CLIENT.create_team(
       'HackCU',
       name: @name,
-      permissions: 'admin',
-      repo_names: []
+      permission: 'admin',
+      repo_names: ["HackCU/#{@name}"]
     )
   end
 
@@ -56,7 +56,9 @@ class Team
 end
 
 # Create repos for these fools
-Dir['teams/*.yml'].each do |team|
-  t = YAML.load_file team
-  Team.create name: t['name'], members: t['members']
+def add_teams
+  Dir['teams/*.yml'].each do |team|
+    t = YAML.load_file team
+    Team.create name: t['name'], members: t['members']
+  end
 end
