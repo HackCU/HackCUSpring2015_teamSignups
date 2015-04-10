@@ -5,14 +5,15 @@ edition of HackCU in Boulder, CO.
 
 ## Getting a Private Repository
 
-Please open an issue on this repo with your team name and GitHub usernames.
+Please open a pull request with some yaml metadata about your team in the
+`teams/` folder.
 
-ex.
+```yaml
+# teams/my_team_name.yml
 
-```
-Subject: Team Buffalo Lovers
-
-team_member_username
-my_sn_is_cool
-hey_asl_whassup
+name: MyTeamName
+members:
+  - johnsmith
+  - myusername
+  - foobarbazzer
 ```
