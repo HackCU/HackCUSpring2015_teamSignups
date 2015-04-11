@@ -1,5 +1,6 @@
 require 'github_api'
 require 'octokit'
+require 'yaml'
 
 GITHUB = Github.new basic_auth: "ianks:#{ENV['GITHUB_PW']}"
 CLIENT = Octokit::Client.new login: 'ianks', password: ENV['GITHUB_PW']
@@ -10,11 +11,17 @@ class Team
     @name, @members = name, members
   end
 
-  def self.create(*args)
-    new(*args).tap do |team|
-      team.create_team
-      team.add_members
-      team.add_repo
+  def self.create(name:, members:)
+    new(name: name, members: members).tap do |team|
+      if CLIENT.repository? "HackCU/#{name}"
+        puts "#{name} already exists."
+        return team
+      else
+        puts "Creating #{name}."
+        team.create_team
+        team.add_members
+        team.add_repo
+      end
     end
   end
 
@@ -22,8 +29,8 @@ class Team
     @team = CLIENT.create_team(
       'HackCU',
       name: @name,
-      permissions: 'admin',
-      repo_names: []
+      permission: 'admin',
+      repo_names: ["HackCU/#{@name}"]
     )
   end
 
@@ -45,5 +52,13 @@ class Team
       STDERR.puts "Could not create repo for #{@name}"
       STDERR.puts e
     end
+  end
+end
+
+# Create repos for these fools
+def add_teams
+  Dir['teams/*.yml'].each do |team|
+    t = YAML.load_file team
+    Team.create name: t['name'], members: t['members']
   end
 end
