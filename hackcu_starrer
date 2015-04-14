@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'io/console'
+
+begin
+  require 'octokit'
+rescue
+  puts 'You must have the octokit gem installed.'
+  puts '=> [sudo] gem install octokit'
+  exit 1
+end
+
+print 'GitHub username: '
+user = gets.chomp
+
+print 'GitHub password: '
+pw = STDIN.noecho(&:gets).chomp
+
+CLIENT = Octokit::Client.new login: user, password: pw
+
+begin
+  CLIENT.organization_repositories('HackCU').each do |repo|
+    CLIENT.star repo.full_name
+  end
+rescue => e
+  puts e.to_s
+
+  puts
+  puts
+
+  puts 'Something went wrong, maybe incorrect username/password?'
+  exit 1
+end
+
+puts 'Thanks for showing the love to HackCU participants.'
